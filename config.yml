@@ -1,0 +1,32 @@
+baseURL: ''
+languageCode: en-us
+title: Joel's Portfolio
+theme: PaperMod
+
+params:
+  homeInfoParams:
+    Title: "Hey, I’m Joel \U0001F44B"
+    Content: I am a Front-end Engineer & Technical Writer. I enjoy creating interactive solutions with JavaScript. On my blog, I write about code (mostly JavaScript and React) and everything I learn. I’m actively exploring the world of web3 and blockchain technology.
+
+  socialIcons:
+    - name: twitter
+      url: https://twitter.com/joelolawanle
+    - name: github
+      url: https://github.com/olawanlejoel
+    - name: linkedin
+      url: https://www.linkedin.com/in/joelolawanle/
+
+menu:
+  main:
+    - identifier: home
+      name: Home
+      url: /
+      weight: 10
+    - identifier: posts
+      name: Blog
+      url: /posts/
+      weight: 20
+    - identifier: contents
+      name: Contents
+      url: https://joelolawanle.com/contents
+      weight: 30

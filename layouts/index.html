@@ -1,0 +1,51 @@
+{{- define "main" }} 
+    {{- $pages := union .RegularPages .Sections }} 
+    {{- $paginator := .Paginate $pages }} 
+
+    {{- if and .IsHome site.Params.homeInfoParams (eq $paginator.PageNumber 1) }} 
+    {{- partial "home_info.html" . }} 
+    {{- end }}
+
+    {{ $options := dict
+        "method" "POST" 
+        "headers" (dict "Content-Type" "application/graphql")
+        "body" `{
+            projects {
+            id
+            title
+            description
+            gitHubLink
+            liveLink
+            }
+        }`
+    }}
+
+    {{ with resources.GetRemote "https://api-eu-west-2.hygraph.com/v2/cldhdnrg318on01taclc7ch48/master" $options }}
+        {{ with .Content }}
+            {{ with transform.Unmarshal . }}
+                {{ with .data.projects }}
+                    {{ range . }}
+                        {{ printf "%#v" . }}
+                    {{ end }}
+                {{ end }}
+            {{end}}
+        {{end}}
+    {{end}}
+
+    <div class="projects-section">
+        <h2>Projects</h2>
+        <div class="portfolio-projects">
+            <div class="project">
+                <div class="project-header">
+                    <i class="fa-regular fa-folder-open folder-icon"></i>
+                    <div class="small-icons">
+                        <a href="#"><i class="fa-brands fa-github"></i></a>
+                        <a href="#"><i class="fa-solid fa-up-right-from-square"></i></a>
+                    </div>
+                </div>
+                <h3>Project Title</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores soluta, incidunt sed non animi voluptates quo! Dolorum, atque. Rem soluta sunt similique labore officia, illo voluptatum alias quo tempora sequi!</p>
+            </div>
+        </div>
+    </div>
+{{- end }}
