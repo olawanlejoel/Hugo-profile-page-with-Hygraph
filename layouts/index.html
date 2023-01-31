@@ -20,32 +20,74 @@
         }`
     }}
 
-    {{ with resources.GetRemote "https://api-eu-west-2.hygraph.com/v2/cldhdnrg318on01taclc7ch48/master" $options }}
-        {{ with .Content }}
-            {{ with transform.Unmarshal . }}
-                {{ with .data.projects }}
-                    {{ range . }}
-                        {{ printf "%#v" . }}
-                    {{ end }}
-                {{ end }}
-            {{end}}
-        {{end}}
-    {{end}}
-
     <div class="projects-section">
         <h2>Projects</h2>
         <div class="portfolio-projects">
-            <div class="project">
-                <div class="project-header">
-                    <i class="fa-regular fa-folder-open folder-icon"></i>
-                    <div class="small-icons">
-                        <a href="#"><i class="fa-brands fa-github"></i></a>
-                        <a href="#"><i class="fa-solid fa-up-right-from-square"></i></a>
-                    </div>
-                </div>
-                <h3>Project Title</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores soluta, incidunt sed non animi voluptates quo! Dolorum, atque. Rem soluta sunt similique labore officia, illo voluptatum alias quo tempora sequi!</p>
-            </div>
+            {{ with resources.GetRemote "https://api-eu-west-2.hygraph.com/v2/cldhdnrg318on01taclc7ch48/master" $options }}
+                {{ with .Content }}
+                    {{ with transform.Unmarshal . }}
+                        {{ with .data.projects }}
+                            {{ range . }}
+                                <div class="project">
+                                    <div class="project-header">
+                                        <i class="fa-regular fa-folder-open folder-icon"></i>
+                                        <div class="small-icons">
+                                            <a href={{ .gitHubLink }}><i class="fa-brands fa-github"></i></a>
+                                            <a href={{ .liveLink }}><i class="fa-solid fa-up-right-from-square"></i></a>
+                                        </div>
+                                    </div>
+                                    <h3>{{ .title }}</h3>
+                                    <p>{{ .description }}</p>
+                                </div>
+                            {{ end }}
+                        {{ end }}
+                    {{end}}
+                {{end}}
+            {{end}}
         </div>
     </div>
+    <script>
+    window.addEventListener('load', function() {
+        var portfolioProjectsContainer = document.querySelector(".portfolio-projects");
+
+        fetch("https://api-eu-west-2.hygraph.com/v2/cldhdnrg318on01taclc7ch48/master", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            query: `
+            query {
+                projects {
+                    id
+                    title
+                    description
+                    gitHubLink
+                    liveLink
+                }
+            }
+            `
+        })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            let projects = data.data.projects;
+            portfolioProjectsContainer.innerHTML = '';
+            projects.forEach(project => {
+                portfolioProjectsContainer.innerHTML += `
+                    <div class="project">
+                        <div class="project-header">
+                            <i class="fa-regular fa-folder-open folder-icon"></i>
+                            <div class="small-icons">
+                                <a href=${project.gitHubLink}><i class="fa-brands fa-github"></i></a>
+                                <a href=${project.liveLink}><i class="fa-solid fa-up-right-from-square"></i></a>
+                            </div>
+                        </div>
+                        <h3>${project.title}</h3>
+                        <p>${project.description}</p>
+                    </div>
+                `
+            });
+        })
+        .catch((error) => console.log(error));
+    });
+    </script>
 {{- end }}
