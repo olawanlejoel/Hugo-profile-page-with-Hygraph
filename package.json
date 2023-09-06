@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build": "hugo",
+    "create": "hugo new",
+    "serve": "hugo server"
+  },
+  "dependencies": {
+    "hugo-bin": "^0.114.2"
+  }
+}
